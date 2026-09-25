@@ -43,7 +43,8 @@ init_times = times[init_idx]
 def build_features():
     """Feature array F with shape (n_init, NLAT, NLON, n_features). All vectorised."""
     feats = []
-    for lag in range(1, LOOKBACK + 1):
+    # lag 0 = the init day itself (today's observation is known at forecast time)
+    for lag in range(0, LOOKBACK):
         feats.append(rain[init_idx - lag])
         feats.append(tmax[init_idx - lag])
     doy = pd.DatetimeIndex(init_times).dayofyear.values
