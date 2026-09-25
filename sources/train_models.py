@@ -12,7 +12,7 @@ Writes:  data/lgbm_forecast.nc   data/linreg_forecast.nc
 
 Idea: from the last 5 days of weather at a grid point, predict days T+1..T+5.
 Features: rain & tmax for the last 5 days, day-of-year (sin/cos), lat, lon.
-Train on 2020-2022, test on 2023.
+Train on 2020-2021. 2022 is kept unseen so the blender can learn honest weights; 2023 is the final test.
 """
 from pathlib import Path
 import numpy as np
@@ -24,7 +24,7 @@ from sources.common import load, save, LAT, LON
 
 LEADS = np.arange(1, 6)
 LOOKBACK = 5
-TRAIN_END = np.datetime64("2022-12-31")
+TRAIN_END = np.datetime64("2021-12-31")   # ML models never see 2022 or 2023
 VARS = ["rain", "tmax"]
 
 print("Loading IMD observations ...")
@@ -43,7 +43,8 @@ init_times = times[init_idx]
 def build_features():
     """Feature array F with shape (n_init, NLAT, NLON, n_features). All vectorised."""
     feats = []
-    for lag in range(1, LOOKBACK + 1):
+    # lag 0 = the init day itself (today's observation is known at forecast time)
+    for lag in range(0, LOOKBACK):
         feats.append(rain[init_idx - lag])
         feats.append(tmax[init_idx - lag])
     doy = pd.DatetimeIndex(init_times).dayofyear.values
@@ -112,7 +113,7 @@ for name in ["lgbm", "linreg"]:
         {v: (("init_time", "lead", "lat", "lon"), out[name][v],
              {"units": "mm/day" if v == "rain" else "degC"}) for v in VARS},
         coords={"init_time": init_times, "lead": LEADS, "lat": LAT, "lon": LON},
-        attrs={"source": f"{name} trained on IMD obs 2020-2022"},
+        attrs={"source": f"{name} trained on IMD obs 2020-2021"},
     )
     ds["lead"].attrs["units"] = "days"
     save(ds, f"{name}_forecast", kind="forecast")
