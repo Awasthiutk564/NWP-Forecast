@@ -1,0 +1,6 @@
+raw_imd/
+data/*.nc
+!data/dummy_*.nc
+.env
+__pycache__/
+venv/
