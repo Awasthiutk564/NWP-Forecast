@@ -1,223 +1,120 @@
 """
-train_models.py  -  P2's job: train LightGBM and LinearRegression on IMD obs.
+train_models.py  -  P2: train LightGBM and Ridge regression on IMD obs.
 
-These become two more forecast SOURCES for the blender to combine.
+These become two more forecast SOURCES for the blender.
 
 Run from the repo root:
     python -m sources.train_models
 
 Reads:   data/imd_obs.nc
 Writes:  data/lgbm_forecast.nc   data/linreg_forecast.nc
-         models/lgbm_rain.txt    models/lgbm_tmax.txt  (saved LightGBM models)
+         models/lgbm_<var>_lead<L>.txt
 
-The idea:
-  - Given weather on day T (and a few days before), predict day T+1 .. T+5
-  - Features: recent rain, recent tmax, day-of-year, lat, lon
-  - One model per variable (rain, tmax), applied at every grid point
+Idea: from the last 5 days of weather at a grid point, predict days T+1..T+5.
+Features: rain & tmax for the last 5 days, day-of-year (sin/cos), lat, lon.
+Train on 2020-2022, test on 2023.
 """
+from pathlib import Path
 import numpy as np
 import pandas as pd
 import xarray as xr
 import lightgbm as lgb
 from sklearn.linear_model import Ridge
-from pathlib import Path
 from sources.common import load, save, LAT, LON
 
-LEADS = np.arange(1, 6)        # forecast lead days 1..5
-LOOKBACK = 5                   # use last 5 days as features
-TRAIN_END = "2022-12-31"       # train on data up to here
-TEST_START = "2023-01-01"      # test on 2023 onwards
+LEADS = np.arange(1, 6)
+LOOKBACK = 5
+TRAIN_END = np.datetime64("2022-12-31")
+VARS = ["rain", "tmax"]
 
 print("Loading IMD observations ...")
-obs = load("imd_obs")[["rain", "tmax"]].load()
+obs = load("imd_obs")[VARS].load()
+rain = obs["rain"].values.astype("float32")          # (time, lat, lon)
+tmax = obs["tmax"].values.astype("float32")
+times = obs.time.values
+T, NLAT, NLON = rain.shape
 
-# ──────────────────────────────────────────────
-#  Build features for every (time, lat, lon)
-# ──────────────────────────────────────────────
-def make_features(obs_ds):
-    """
-    For each day T, create features from the last LOOKBACK days.
-    Returns a DataFrame with columns:
-        rain_lag1 .. rain_lag5, tmax_lag1 .. tmax_lag5,
-        doy_sin, doy_cos, lat, lon
-    And target columns for each lead:
-        rain_lead1 .. rain_lead5, tmax_lead1 .. tmax_lead5
-    """
-    times = obs_ds.time.values
-    n_time = len(times)
-    rain = obs_ds["rain"].values    # (time, lat, lon)
-    tmax = obs_ds["tmax"].values
+# Init days that have LOOKBACK days of history and 5 days of future
+init_idx = np.arange(LOOKBACK, T - LEADS.max())
+n_init = len(init_idx)
+init_times = times[init_idx]
 
-    rows = []
-    max_offset = max(LOOKBACK, int(LEADS.max()))
 
-    # Sample a subset of grid points to keep training fast
-    # Use every 2nd point (still ~500 points, plenty for training)
-    lat_idx = np.arange(0, len(LAT), 2)
-    lon_idx = np.arange(0, len(LON), 2)
+def build_features():
+    """Feature array F with shape (n_init, NLAT, NLON, n_features). All vectorised."""
+    feats = []
+    for lag in range(1, LOOKBACK + 1):
+        feats.append(rain[init_idx - lag])
+        feats.append(tmax[init_idx - lag])
+    doy = pd.DatetimeIndex(init_times).dayofyear.values
+    shape = (n_init, NLAT, NLON)
+    feats.append(np.broadcast_to(np.sin(2 * np.pi * doy / 365)[:, None, None], shape))
+    feats.append(np.broadcast_to(np.cos(2 * np.pi * doy / 365)[:, None, None], shape))
+    feats.append(np.broadcast_to(LAT[None, :, None], shape))
+    feats.append(np.broadcast_to(LON[None, None, :], shape))
+    return np.stack(feats, axis=-1).astype("float32")
 
-    print(f"  Building features: {n_time - max_offset} days x {len(lat_idx)*len(lon_idx)} points ...")
 
-    for t in range(LOOKBACK, n_time - int(LEADS.max())):
-        doy = pd.Timestamp(times[t]).dayofyear
-        doy_sin = np.sin(2 * np.pi * doy / 365)
-        doy_cos = np.cos(2 * np.pi * doy / 365)
-
-        for i in lat_idx:
-            for j in lon_idx:
-                row = {}
-                # Lag features
-                for lag in range(1, LOOKBACK + 1):
-                    r = rain[t - lag, i, j]
-                    tx = tmax[t - lag, i, j]
-                    if np.isnan(r) or np.isnan(tx):
-                        break
-                    row[f"rain_lag{lag}"] = r
-                    row[f"tmax_lag{lag}"] = tx
-                else:
-                    # Only add row if all lags are valid
-                    row["doy_sin"] = doy_sin
-                    row["doy_cos"] = doy_cos
-                    row["lat"] = LAT[i]
-                    row["lon"] = LON[j]
-                    row["_t"] = t
-                    row["_i"] = i
-                    row["_j"] = j
-
-                    # Targets for each lead
-                    for L in LEADS:
-                        row[f"rain_lead{L}"] = rain[t + L, i, j]
-                        row[f"tmax_lead{L}"] = tmax[t + L, i, j]
-
-                    rows.append(row)
-
-    df = pd.DataFrame(rows)
-    print(f"  Built {len(df)} training samples")
-    return df
+def target(var_arr, L):
+    return var_arr[init_idx + L]                      # (n_init, NLAT, NLON)
 
 
 print("Building features ...")
-df = make_features(obs)
+F = build_features()
+n_feat = F.shape[-1]
+X_all = F.reshape(-1, n_feat)
+valid = ~np.isnan(X_all).any(axis=1)                  # drop sea / missing points
 
-# Drop rows with NaN targets
-target_cols = [f"rain_lead{L}" for L in LEADS] + [f"tmax_lead{L}" for L in LEADS]
-df = df.dropna(subset=target_cols)
+is_train_day = init_times <= TRAIN_END
+train_rows = np.broadcast_to(is_train_day[:, None, None], (n_init, NLAT, NLON)).reshape(-1)
 
-feature_cols = [c for c in df.columns if c.startswith(("rain_lag", "tmax_lag", "doy", "lat", "lon"))]
+# Use every 2nd grid point for training to keep it quick
+sub = np.zeros((NLAT, NLON), dtype=bool)
+sub[::2, ::2] = True
+sub_rows = np.broadcast_to(sub[None], (n_init, NLAT, NLON)).reshape(-1)
 
-# Split train / test by time index
-time_vals = obs.time.values
-train_cutoff = np.datetime64(TRAIN_END)
-train_mask = time_vals[df["_t"].values.astype(int)] <= train_cutoff
-df_train = df[train_mask]
-df_test = df[~train_mask]
+print(f"  {valid.sum():,} valid samples, {n_feat} features")
 
-print(f"  Train: {len(df_train)}  Test: {len(df_test)}")
-
-X_train = df_train[feature_cols].values
-X_test = df_test[feature_cols].values
-
-# ──────────────────────────────────────────────
-#  Train models
-# ──────────────────────────────────────────────
 Path("models").mkdir(exist_ok=True)
+out = {m: {v: np.full((n_init, len(LEADS), NLAT, NLON), np.nan, dtype="float32")
+           for v in VARS} for m in ["lgbm", "linreg"]}
 
-lgbm_models = {}
-linreg_models = {}
+params = {"objective": "regression", "learning_rate": 0.05, "num_leaves": 31,
+          "min_child_samples": 50, "verbose": -1}
 
-for var in ["rain", "tmax"]:
-    for L in LEADS:
-        col = f"{var}_lead{L}"
-        y_train = df_train[col].values
-        y_test = df_test[col].values
+print("Training ...")
+for var, arr in [("rain", rain), ("tmax", tmax)]:
+    for li, L in enumerate(LEADS):
+        y_all = target(arr, L).reshape(-1)
+        ok = valid & ~np.isnan(y_all)
+        tr = ok & train_rows & sub_rows
+        te = ok & ~train_rows
 
-        # --- LightGBM ---
-        dtrain = lgb.Dataset(X_train, label=y_train)
-        params = {
-            "objective": "regression",
-            "metric": "rmse",
-            "learning_rate": 0.05,
-            "num_leaves": 31,
-            "min_child_samples": 50,
-            "verbose": -1,
-        }
-        model = lgb.train(params, dtrain, num_boost_round=200)
-        pred = model.predict(X_test)
-        rmse = np.sqrt(np.nanmean((pred - y_test) ** 2))
-        print(f"  LightGBM  {col}  test RMSE: {rmse:.3f}")
+        lg = lgb.train(params, lgb.Dataset(X_all[tr], label=y_all[tr]), num_boost_round=200)
+        rd = Ridge(alpha=1.0).fit(X_all[tr], y_all[tr])
+        lg.save_model(f"models/lgbm_{var}_lead{L}.txt")
 
-        key = f"{var}_lead{L}"
-        lgbm_models[key] = model
-        model.save_model(f"models/lgbm_{key}.txt")
+        p_lg = lg.predict(X_all[te]); p_rd = rd.predict(X_all[te])
+        rmse = lambda p: np.sqrt(np.mean((p - y_all[te]) ** 2))
+        print(f"  {var} lead{L}:  LightGBM RMSE {rmse(p_lg):6.2f}   Ridge RMSE {rmse(p_rd):6.2f}")
 
-        # --- Linear Regression (Ridge) ---
-        ridge = Ridge(alpha=1.0)
-        ridge.fit(X_train, y_train)
-        pred_lr = ridge.predict(X_test)
-        rmse_lr = np.sqrt(np.nanmean((pred_lr - y_test) ** 2))
-        print(f"  LinReg    {col}  test RMSE: {rmse_lr:.3f}")
-        linreg_models[key] = ridge
+        # Predict every valid grid point in one call
+        for name, model in [("lgbm", lg), ("linreg", rd)]:
+            pred = np.full(X_all.shape[0], np.nan, dtype="float32")
+            pred[valid] = model.predict(X_all[valid])
+            if var == "rain":
+                pred = np.clip(pred, 0, None)
+            out[name][var][:, li] = pred.reshape(n_init, NLAT, NLON)
 
-# ──────────────────────────────────────────────
-#  Generate full-grid forecasts in contract format
-# ──────────────────────────────────────────────
-print("Generating full-grid forecasts ...")
-
-rain_obs = obs["rain"].values
-tmax_obs = obs["tmax"].values
-n_time = obs.sizes["time"]
-
-n_init = n_time - LOOKBACK - int(LEADS.max())
-init_times = obs.time.values[LOOKBACK:LOOKBACK + n_init]
-
-lgbm_rain = np.full((n_init, len(LEADS), len(LAT), len(LON)), np.nan, dtype="float32")
-lgbm_tmax = np.full_like(lgbm_rain, np.nan)
-lr_rain = np.full_like(lgbm_rain, np.nan)
-lr_tmax = np.full_like(lgbm_rain, np.nan)
-
-for idx in range(n_init):
-    t = LOOKBACK + idx
-    doy = pd.Timestamp(obs.time.values[t]).dayofyear
-    doy_sin = np.sin(2 * np.pi * doy / 365)
-    doy_cos = np.cos(2 * np.pi * doy / 365)
-
-    for i in range(len(LAT)):
-        for j in range(len(LON)):
-            feats = []
-            valid = True
-            for lag in range(1, LOOKBACK + 1):
-                r = rain_obs[t - lag, i, j]
-                tx = tmax_obs[t - lag, i, j]
-                if np.isnan(r) or np.isnan(tx):
-                    valid = False
-                    break
-                feats.extend([r, tx])
-            if not valid:
-                continue
-            feats.extend([doy_sin, doy_cos, LAT[i], LON[j]])
-            X = np.array(feats).reshape(1, -1)
-
-            for li, L in enumerate(LEADS):
-                lgbm_rain[idx, li, i, j] = max(0, lgbm_models[f"rain_lead{L}"].predict(X)[0])
-                lgbm_tmax[idx, li, i, j] = lgbm_models[f"tmax_lead{L}"].predict(X)[0]
-                lr_rain[idx, li, i, j] = max(0, linreg_models[f"rain_lead{L}"].predict(X)[0])
-                lr_tmax[idx, li, i, j] = linreg_models[f"tmax_lead{L}"].predict(X)[0]
-
-    if (idx + 1) % 100 == 0:
-        print(f"  {idx + 1}/{n_init} init times done ...")
-
-# Save in contract format
-for name, r, t in [("lgbm_forecast", lgbm_rain, lgbm_tmax),
-                    ("linreg_forecast", lr_rain, lr_tmax)]:
+print("Saving forecasts ...")
+for name in ["lgbm", "linreg"]:
     ds = xr.Dataset(
-        {
-            "rain": (("init_time", "lead", "lat", "lon"), r, {"units": "mm/day"}),
-            "tmax": (("init_time", "lead", "lat", "lon"), t, {"units": "degC"}),
-        },
+        {v: (("init_time", "lead", "lat", "lon"), out[name][v],
+             {"units": "mm/day" if v == "rain" else "degC"}) for v in VARS},
         coords={"init_time": init_times, "lead": LEADS, "lat": LAT, "lon": LON},
-        attrs={"source": f"{name} trained on IMD obs"},
+        attrs={"source": f"{name} trained on IMD obs 2020-2022"},
     )
     ds["lead"].attrs["units"] = "days"
-    save(ds, name, kind="forecast")
+    save(ds, f"{name}_forecast", kind="forecast")
 
 print("Done! Teammates: load('lgbm_forecast') and load('linreg_forecast')")
