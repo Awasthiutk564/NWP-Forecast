@@ -17,6 +17,9 @@ Rules (IMD thresholds):
     orange  Tmax >= 40 C and >= 6.5 C above normal, or Tmax >= 47 C   (severe heatwave)
     red     Tmax >= 47 C
 Only the test year (2023) is used, because earlier years were seen during training.
+If data/alert_triggers.csv exists (from verify_alerts.py), the forecast is first
+calibrated: rain scaled so the learned trigger maps to 64.5 mm (leads 1-2 only),
+and a per-lead warm offset added to Tmax. The IMD rules above are then applied.
 """
 import warnings
 import numpy as np
@@ -41,9 +44,9 @@ def messages(hazard, level, district, date, value):
     d = pd.Timestamp(date).strftime("%d-%m-%Y")
     if hazard == "heavy_rain":
         en = (f"{level.upper()} ALERT: {EN_RAIN[level]} likely in {district} district on {d} "
-              f"(up to {value:.0f} mm). Stay alert and avoid low-lying areas.")
+              f"(calibrated forecast about {value:.0f} mm). Stay alert and avoid low-lying areas.")
         te = (f"{TE_LEVEL[level]}: {district} జిల్లాలో {d} న {TE_RAIN[level]} కురిసే అవకాశం ఉంది "
-              f"({value:.0f} మి.మీ. వరకు). అప్రమత్తంగా ఉండండి, లోతట్టు ప్రాంతాలకు దూరంగా ఉండండి.")
+              f"(సుమారు {value:.0f} మి.మీ.). అప్రమత్తంగా ఉండండి, లోతట్టు ప్రాంతాలకు దూరంగా ఉండండి.")
     else:
         en = (f"{level.upper()} ALERT: {EN_HEAT[level]} likely in {district} district on {d} "
               f"(max temperature {value:.1f} °C). Avoid going out in the afternoon and drink enough water.")
@@ -84,6 +87,19 @@ leads = fc.lead.values
 rain = fc["rain"].transpose("init_time", "lead", "lat", "lon").values
 tmax = fc["tmax"].transpose("init_time", "lead", "lat", "lon").values
 dep = tmax - clim["tmax"].transpose("init_time", "lead", "lat", "lon").values
+
+# ---------- Calibration from verify_alerts.py (learned on 2022) ----------
+trig_path = DATA_DIR / "alert_triggers.csv"
+if trig_path.exists():
+    trig = pd.read_csv(trig_path).set_index("lead").reindex(leads)
+    scale = (64.5 / trig["rain_trigger_mm"].values)[None, :, None, None]   # calibrated rain
+    on = trig["rain_alerts_on"].values.astype(bool)[None, :, None, None]
+    off = trig["heat_offset_c"].values[None, :, None, None]
+    rain = np.where(on, rain * scale, 0.0)
+    tmax, dep = tmax + off, dep + off
+    print("  Using calibrated triggers from alert_triggers.csv")
+else:
+    print("  No alert_triggers.csv - using raw IMD thresholds (run verify_alerts first)")
 
 rain_lvl = (rain >= 64.5).astype(int) + (rain >= 115.6) + (rain >= 204.5)
 hw = ((tmax >= 40) & (dep >= 4.5)) | (tmax >= 45)

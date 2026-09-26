@@ -1,0 +1,6 @@
+lead,rain_trigger_mm,rain_alerts_on,heat_offset_c
+1,25.0,True,0.0
+2,25.0,False,0.0
+3,25.0,False,0.0
+4,25.0,False,0.0
+5,25.0,False,0.0
