@@ -10,7 +10,7 @@ import imdlib as imd
 import xarray as xr
 from sources.common import to_common_grid, save
 
-START_YEAR, END_YEAR = 2020, 2023      # small first! widen later (e.g. 2000-2023)
+START_YEAR, END_YEAR = 2010, 2023     # small first! widen later (e.g. 2000-2023)
 RAW_DIR = "raw_imd"                    # raw IMD binary files go here (not in Git)
 
 
