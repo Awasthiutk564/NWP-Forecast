@@ -3,3 +3,8 @@ netCDF4
 numpy
 pandas
 imdlib
+geopandas
+streamlit
+plotly
+pyarrow
+dask
