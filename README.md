@@ -145,7 +145,7 @@ Always run scripts **from the repository root** as modules, e.g. `python -m sour
 
 **Option A (fastest):** copy all `.nc` files from the team Google Drive into `data/`.
 
-> Team Drive link: *(add link here)*
+> Team Drive link: https://drive.google.com/drive/folders/1UW1yGNa8kwh2jO6LZdWfFV_bC2Pn3CgE
 
 **Option B (rebuild from scratch):**
 1. `python -m sources.fetch_imd` downloads IMD data for 2010–2023. The IMD server can be slow; if it times out, run it again (finished years are skipped).
