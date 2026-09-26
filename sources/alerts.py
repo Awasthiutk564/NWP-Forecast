@@ -106,6 +106,12 @@ hw = ((tmax >= 40) & (dep >= 4.5)) | (tmax >= 45)
 severe = ((tmax >= 40) & (dep >= 6.5)) | (tmax >= 47)
 heat_lvl = hw.astype(int) + severe + (tmax >= 47)
 
+# Next-day alerts only: verification on 2023 shows skill at lead 1; longer leads
+# either miss almost everything or flood the map with false alarms.
+ALERT_MAX_LEAD = 1
+day_ok = (leads <= ALERT_MAX_LEAD)[None, :, None, None]
+rain_lvl, heat_lvl = rain_lvl * day_ok, heat_lvl * day_ok
+
 # ---------- 3. District-level alerts ----------
 rows = []
 for (district, state), (I, J) in cells.items():

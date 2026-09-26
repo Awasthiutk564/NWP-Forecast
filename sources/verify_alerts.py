@@ -115,14 +115,14 @@ leads = d23["leads"]
 o22, o23 = d22["o_rain"] >= HEAVY, d23["o_rain"] >= HEAVY
 print(f"Observed heavy-rain district-days in 2023: {int(o23[:, :, 0].sum())}")
 
-RAIN_MAX_LEAD = 1          # rain alerts only where the system has skill
+RAIN_MAX_LEAD = 1          # alerts are issued for the next day only
 OFFSETS = np.round(np.arange(0.0, 4.01, 0.5), 1)
 nL = len(leads)
 
 # ---------- 1. Current rules, 2023 ----------
-table("HEATWAVE alerts, 2023 (current rules)", leads, f_heat(d23, np.zeros(nL)), d23["o_heat"])
-table("HEAVY RAIN alerts, 2023 (current rule: forecast >= 64.5 mm)", leads,
-      d23["f_rain"] >= HEAVY, o23)
+heat_raw = table("HEATWAVE alerts, 2023 (current rules)", leads, f_heat(d23, np.zeros(nL)), d23["o_heat"])
+rain_raw = table("HEAVY RAIN alerts, 2023 (current rule: forecast >= 64.5 mm)", leads,
+                 d23["f_rain"] >= HEAVY, o23)
 
 # ---------- 2. Calibrate on 2022 only ----------
 # Rain: ONE trigger shared by leads 1-2 (pooled, so a single noisy year can't overfit each lead)
@@ -142,13 +142,25 @@ for li in range(nL):
     heat_off.append(float(OFFSETS[int(np.argmax(csis))]))
 heat_off = np.array(heat_off)
 
-print(f"\nCalibrated on 2022:  rain trigger = {rain_trig:.1f} mm (leads 1-{RAIN_MAX_LEAD} only)")
+print(f"\nCalibrated on 2022:  rain trigger = {rain_trig:.1f} mm (up to lead {RAIN_MAX_LEAD})")
 print("                     heat offset  = " + "  ".join(f"L{L}=+{o:.1f}C" for L, o in zip(leads, heat_off)))
 
 # ---------- 3. Test the calibrated rules on 2023 ----------
 rain_fe = (d23["f_rain"] >= rain_trig) & (np.arange(nL) < RAIN_MAX_LEAD)[None, None, :]
-table("HEAVY RAIN alerts, 2023 (calibrated, leads 1-2 only)", leads, rain_fe, o23)
-table("HEATWAVE alerts, 2023 (calibrated)", leads, f_heat(d23, heat_off), d23["o_heat"])
+rain_cal = table(f"HEAVY RAIN alerts, 2023 (calibrated, up to lead {RAIN_MAX_LEAD})", leads, rain_fe, o23)
+heat_cal = table("HEATWAVE alerts, 2023 (calibrated; alerts.py issues lead 1 only)", leads,
+                 f_heat(d23, heat_off), d23["o_heat"])
+
+# Day-1 scores in one small file, so charts and slides always use the latest numbers
+summary = pd.concat([
+    heat_raw.loc[[1]].assign(hazard="heatwave", rule="raw IMD rules"),
+    heat_cal.loc[[1]].assign(hazard="heatwave", rule=f"calibrated (+{heat_off[0]:.1f} C)"),
+    rain_raw.loc[[1]].assign(hazard="heavy_rain", rule="raw 64.5 mm rule"),
+    rain_cal.loc[[1]].assign(hazard="heavy_rain", rule=f"calibrated ({rain_trig:.1f} mm trigger)"),
+]).reset_index()[["hazard", "rule", "lead", "hits", "misses", "false_alarms", "POD", "FAR", "CSI"]]
+summary.to_csv(DATA_DIR / "alert_scores.csv", index=False)
+print("\nDay-1 alert scores (saved to data/alert_scores.csv):")
+print(summary.round(2).to_string(index=False))
 
 pd.DataFrame({
     "lead": leads,

@@ -12,7 +12,7 @@ Writes:  data/lgbm_forecast.nc   data/linreg_forecast.nc
 
 Idea: from the last 5 days of weather at a grid point, predict days T+1..T+5.
 Features: rain & tmax for the last 5 days, day-of-year (sin/cos), lat, lon.
-Train on 2020-2021. 2022 is kept unseen so the blender can learn honest weights; 2023 is the final test.
+Train on 2010-2021 (targets end 31 Dec 2021). 2022 is kept unseen so the blender can learn honest weights; 2023 is the final test.
 """
 from pathlib import Path
 import numpy as np
@@ -24,7 +24,7 @@ from sources.common import load, save, LAT, LON
 
 LEADS = np.arange(1, 6)
 LOOKBACK = 5
-TRAIN_END = np.datetime64("2021-12-31")   # ML models never see 2022 or 2023
+TRAIN_END = np.datetime64("2021-12-26")   # last init; its day-5 target is 31 Dec 2021, so no 2022 data is used
 VARS = ["rain", "tmax"]
 
 print("Loading IMD observations ...")
@@ -113,7 +113,7 @@ for name in ["lgbm", "linreg"]:
         {v: (("init_time", "lead", "lat", "lon"), out[name][v],
              {"units": "mm/day" if v == "rain" else "degC"}) for v in VARS},
         coords={"init_time": init_times, "lead": LEADS, "lat": LAT, "lon": LON},
-        attrs={"source": f"{name} trained on IMD obs 2020-2021"},
+        attrs={"source": f"{name} trained on IMD obs 2010-2021"},
     )
     ds["lead"].attrs["units"] = "days"
     save(ds, f"{name}_forecast", kind="forecast")

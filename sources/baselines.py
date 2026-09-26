@@ -51,9 +51,10 @@ today = {v: obs[v].values[:n] for v in VARS}
 pack([today for _ in LEADS], "persistence", "Persistence forecast from IMD observations")
 
 # ---------- 2. Climatology ----------
-# Use all years except the last one, so the last year stays unseen for testing.
-cutoff = obs.time.values[-1] - np.timedelta64(365, "D")
-train = obs.sel(time=obs.time < cutoff)
+# Same split as the ML models: climatology is built from years up to 2021 only,
+# so it has never seen 2022 (blend-weight year) or 2023 (test year).
+CLIM_END = np.datetime64("2021-12-31")
+train = obs.sel(time=obs.time <= CLIM_END)
 if train.sizes["time"] < 365:                 # dummy data is only one month
     train = obs
 

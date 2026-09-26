@@ -32,3 +32,5 @@ ENV/
 *~
 .DS_Store
 Thumbs.db
+raw_imdaa/
+raw_mera/

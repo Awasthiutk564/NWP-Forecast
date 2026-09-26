@@ -173,30 +173,38 @@ def blend_weights():
 
 # ---------------- d. Alert verification ----------------
 def alert_scores():
+    """Reads data/alert_scores.csv (written by `python -m sources.verify_alerts`),
+    so the chart always shows the latest numbers. Raw rule vs calibrated, per hazard."""
+    df = pd.read_csv(DATA_DIR / "alert_scores.csv")
     metrics = ["POD", "FAR", "CSI"]
-    groups = [
-        ("Heatwave (next day)", {"POD": 0.30, "FAR": 0.18, "CSI": 0.28}, "#e34948"),
-        ("Heavy rain (calibrated)", {"POD": 0.26, "FAR": 0.73, "CSI": 0.15}, "#1c5cab"),
-        ("Heavy rain (raw 64.5 mm rule)", {"CSI": 0.01}, "#9a9893"),
-    ]
-    fig, ax = plt.subplots(figsize=(12, 6.5))
-    w = 0.26
-    for k, (name, vals, col) in enumerate(groups):
-        xs = [i + (k - 1) * w for i, m in enumerate(metrics) if m in vals]
-        vs = [vals[m] for m in metrics if m in vals]
-        bars = ax.bar(xs, vs, width=w - 0.03, color=col, label=name, zorder=3)
-        for b, v in zip(bars, vs):
-            ax.text(b.get_x() + b.get_width() / 2, v + 0.015, f"{v:.2f}",
-                    ha="center", va="bottom", fontsize=15, color=INK)
-    ax.set_xticks(range(3))
-    ax.set_xticklabels(["POD\nhit rate\n(higher = better)",
-                        "FAR\nfalse alarms\n(lower = better)",
-                        "CSI\noverall skill\n(higher = better)"])
-    ax.set_ylim(0, 1)
-    ax.set_ylabel("Score (0–1)")
-    ax.grid(axis="x", visible=False)
-    ax.legend(loc="upper left", frameon=False)
-    ax.set_title("District alert verification (2023, next-day, district-days)", loc="left")
+    hazards = [("heatwave", "Heatwave", "#e34948"), ("heavy_rain", "Heavy rain", "#1c5cab")]
+    fig, axes = plt.subplots(1, 2, figsize=(15, 6.8), sharey=True)
+    w = 0.38
+    for ax, (hz, title, col) in zip(axes, hazards):
+        d = df[df["hazard"] == hz]
+        raw = d[~d["rule"].str.startswith("calibrated")].iloc[0]
+        cal = d[d["rule"].str.startswith("calibrated")].iloc[0]
+        for k, (row, colour) in enumerate([(raw, "#9a9893"), (cal, col)]):
+            xs = np.arange(len(metrics)) + (k - 0.5) * w
+            vs = [float(row[m]) if pd.notna(row[m]) else 0.0 for m in metrics]
+            bars = ax.bar(xs, vs, width=w - 0.04, color=colour, zorder=3,
+                          label=row["rule"].replace(" C)", " °C)"))
+            for b, v in zip(bars, vs):
+                ax.text(b.get_x() + b.get_width() / 2, v + 0.015, f"{v:.2f}",
+                        ha="center", va="bottom", fontsize=15, color=INK)
+        ax.set_xticks(range(len(metrics)))
+        ax.set_xticklabels(["POD\nhit rate\n(higher = better)",
+                            "FAR\nfalse alarms\n(lower = better)",
+                            "CSI\noverall skill\n(higher = better)"])
+        ax.set_ylim(0, 1.08)
+        ax.grid(axis="x", visible=False)
+        ax.set_title(f"{title}  ({int(cal['hits'])} hits, {int(cal['misses'])} misses, "
+                     f"{int(cal['false_alarms'])} false alarms)", loc="left", fontsize=16)
+        ax.legend(loc="upper right", frameon=False, fontsize=14)
+    axes[0].set_ylabel("Score (0–1)")
+    fig.suptitle("Next-day district alerts, 2023 (calibrated on 2022, tested on 2023)",
+                 x=0.06, ha="left", fontsize=22, fontweight="bold")
+    fig.tight_layout()
     save(fig, "alert_scores.png")
 
 
