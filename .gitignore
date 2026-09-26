@@ -4,3 +4,4 @@ data/*.nc
 .env
 __pycache__/
 venv/
+data/*.parquet
