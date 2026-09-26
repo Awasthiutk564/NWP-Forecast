@@ -1,11 +1,3 @@
-"""
-fetch_imd.py  -  downloads IMD gridded rainfall + Tmax and saves data/imd_obs.nc
-
-Run from the repo root (needs internet, takes a while the first time):
-    python -m sources.fetch_imd
-
-Start with a few years to test, then increase END_YEAR range for P2's training.
-"""
 import imdlib as imd
 import xarray as xr
 from sources.common import to_common_grid, save
