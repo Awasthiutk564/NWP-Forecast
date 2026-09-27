@@ -138,20 +138,47 @@ for var in VARS:
         print(f"  {s:13s} lead-1 weights: " +
               "  ".join(f"{n}={a:.2f}" for n, a in zip(NAMES, avg)))
 
-# ---- compare against the original all-year blend ----
+# ---- compare against the original all-year blend, OVERALL and PER SEASON ----
+# The annual score is dominated by the monsoon (biggest errors), and the all-year
+# weights were themselves fitted mostly on monsoon days - so an annual-only
+# comparison hides what season-aware weighting actually changes. Score per season.
+season_rows = []
 try:
-    base = pd.read_csv(DATA_DIR / "blend_scores.csv")
-    base = base[base["source"] == "BLEND"].set_index(["var", "lead"])["rmse"]
-    print("\nSeason-aware blend vs original all-year blend (2023 RMSE, lower is better):")
+    allyear = load("blend_forecast")[VARS].load()
+    allyear = allyear.reindex(init_time=init)          # same days, same order
+
+    print("\n" + "=" * 68)
+    print("Season-aware vs all-year blend (2023 test days, RMSE, lower is better)")
+    print("=" * 68)
+
     for var in VARS:
-        rows = [r for r in score_rows if r["var"] == var and r["source"] == "BLEND_SEASON"]
-        print(f"\n{var}:")
-        for r in sorted(rows, key=lambda z: z["lead"]):
-            b = base.get((var, r["lead"]), np.nan)
-            delta = 100 * (r["rmse"] - b) / b if b == b else np.nan
-            verdict = "better" if delta < 0 else "worse"
-            print(f"  lead {r['lead']}:  season {r['rmse']:.3f}   all-year {b:.3f}   "
-                  f"({abs(delta):.1f}% {verdict})")
+        y = obs_at_valid(var)
+        F = np.stack([f[var].transpose("init_time", "lead", "lat", "lon").values.astype("float32")
+                      for f in fcs])
+        ay = allyear[var].transpose("init_time", "lead", "lat", "lon").values.astype("float32")
+        sn = blend_out[var]
+        common = (~np.isnan(F)).all(axis=0) & ~np.isnan(y) & ~np.isnan(sn) & ~np.isnan(ay)
+
+        def rmse(pred, days):
+            err2 = np.where(common, (pred - y) ** 2, np.nan)[days]
+            return np.sqrt(np.nanmean(err2, axis=(0, 2, 3)))
+
+        print(f"\n--- {var} ---")
+        for label, days in ([("ALL YEAR", test)] +
+                            [(s.upper(), test & (season_of_init == s)) for s in SEASONS]):
+            if days.sum() == 0:
+                continue
+            r_sn, r_ay = rmse(sn, days), rmse(ay, days)
+            gain = 100 * (r_ay - r_sn) / r_ay              # positive = season-aware is better
+            print(f"  {label:13s} ({int(days.sum()):3d} days)  "
+                  f"season {np.nanmean(r_sn):6.3f}   all-year {np.nanmean(r_ay):6.3f}   "
+                  f"{np.nanmean(gain):+5.1f}% {'better' if np.nanmean(gain) > 0 else 'worse'}")
+            for L, a, b, g in zip(leads, r_sn, r_ay, gain):
+                season_rows.append({"var": var, "season": label.lower(), "lead": int(L),
+                                    "rmse_season_aware": float(a), "rmse_all_year": float(b),
+                                    "pct_better": float(g)})
+    pd.DataFrame(season_rows).to_csv(DATA_DIR / "blend_scores_by_season.csv", index=False)
+    print(f"\nPer-season detail saved to {DATA_DIR / 'blend_scores_by_season.csv'}")
 except FileNotFoundError:
     print("\n(run `python -m sources.blend` first to compare against the all-year blend)")
 
