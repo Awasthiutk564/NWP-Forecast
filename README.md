@@ -1,4 +1,4 @@
-#EktaCast — Adaptive AI Blending of Weather Forecasts
+#EdgeCast — Adaptive AI Blending of Weather Forecasts
 
 **Smart India Hackathon 2026 · Team ZeroPing · Problem statement SIH26081**
 *Hybrid AI–NWP Multi-Model Forecast Blending System (NCMRWF, Ministry of Earth Sciences) · Theme: Disaster Management*
