@@ -45,20 +45,32 @@ function PointWeights({ w, v, lead }: { w: Weights; v: Var; lead: number }) {
   );
 }
 
+/** 2nd and 98th percentile of the land values, so each map's colour scale spans its own range. */
+function range(values: (number | null)[], land: boolean[]): [number, number] {
+  const v = values.filter((x, i): x is number => x != null && land[i]).sort((a, b) => a - b);
+  if (!v.length) return [0, 1];
+  const q = (p: number) => v[Math.min(v.length - 1, Math.floor(p * v.length))];
+  const lo = Math.floor(q(0.02) * 100) / 100, hi = Math.ceil(q(0.98) * 100) / 100;
+  return hi > lo ? [lo, hi] : [lo, lo + 0.01];
+}
+
 function WeightMap({ w, grid, districts, v, lead }: { w: Weights; grid: GridInfo; districts: District[] | null; v: Var; lead: number }) {
   const [src, setSrc] = useState("lgbm");
   const srcs = Object.keys(w.maps[v]);
+  const values = w.maps[v][src][lead - 1];
+  const [lo, hi] = range(values, grid.land);
+  const ticks = [0, 0.25, 0.5, 0.75, 1].map((t) => `${Math.round((lo + t * (hi - lo)) * 100)}%`);
   return (
     <div>
       <div style={{ overflowX: "auto" }}>
         <Segmented label="Source" value={src} onChange={setSrc} options={srcs.map((s) => ({ value: s, label: SOURCE_META[s].label }))} />
       </div>
       <div style={{ marginTop: 14 }}>
-        <GridMap grid={grid} districts={districts} values={w.maps[v][src][lead - 1]} color={(x) => css(weightRamp(x / 0.6))}
+        <GridMap grid={grid} districts={districts} values={values} color={(x) => css(weightRamp((x - lo) / (hi - lo)))}
           label={`Blend weight of ${SOURCE_META[src].label} for ${v}, day ${lead}`} format={(x) => `${(x * 100).toFixed(0)}% weight`} />
       </div>
-      <ColorKey title={`Weight given to ${SOURCE_META[src].label}, day ${lead}`}
-        stops={[0, 0.25, 0.5, 0.75, 1].map((t) => css(weightRamp(t)))} labels={["0%", "15%", "30%", "45%", "60%+"]} />
+      <ColorKey title={`Weight given to ${SOURCE_META[src].label}, day ${lead} (scale fitted to this map)`}
+        stops={[0, 0.25, 0.5, 0.75, 1].map((t) => css(weightRamp(t)))} labels={ticks} />
     </div>
   );
 }
