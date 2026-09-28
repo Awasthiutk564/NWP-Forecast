@@ -1,0 +1,94 @@
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 16px 18px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  transition: all var(--dur) var(--ease);
+  position: relative;
+  overflow: hidden;
+  cursor: default;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity var(--dur) var(--ease);
+  pointer-events: none;
+}
+
+.card:hover::before { opacity: 1; }
+
+.card.rain::before    { background: radial-gradient(circle at top left, var(--rain-glow),   transparent 60%); }
+.card.tmax::before    { background: radial-gradient(circle at top left, var(--tmax-glow),   transparent 60%); }
+.card.alert::before   { background: radial-gradient(circle at top left, rgba(239,68,68,0.1), transparent 60%); }
+.card.neutral::before { background: radial-gradient(circle at top left, var(--green-glow),  transparent 60%); }
+
+.card:hover {
+  border-color: var(--border-light);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.iconWrap {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.card.rain .iconWrap    { background: rgba(56,189,248,0.12);  color: var(--rain); }
+.card.tmax .iconWrap    { background: rgba(249,115,22,0.12);  color: var(--tmax); }
+.card.alert .iconWrap   { background: rgba(239,68,68,0.12);   color: #f87171; }
+.card.neutral .iconWrap { background: rgba(34,211,238,0.12);  color: var(--green); }
+
+.body {
+  flex: 1;
+  min-width: 0;
+}
+
+.label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 3px;
+}
+
+.value {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.5px;
+  line-height: 1.1;
+  margin-bottom: 4px;
+}
+
+.sub {
+  font-size: 11px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+/* Skeleton shimmer for loading state */
+.skelValue {
+  height: 26px;
+  width: 80px;
+  border-radius: 6px;
+  margin-bottom: 6px;
+}
+
+.skelSub {
+  height: 12px;
+  width: 120px;
+  border-radius: 4px;
+}

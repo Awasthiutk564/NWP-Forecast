@@ -1,0 +1,708 @@
+.page {
+  padding: 20px 26px;
+  min-height: 100vh;
+  animation: fadeInUp 0.35s var(--ease) both;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.eyebrowRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.livePill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #ef4444;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+}
+
+.pulsingDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ef4444;
+  animation: pulseDot 1.5s infinite;
+}
+
+@keyframes pulseDot {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  50% { transform: scale(1.4); opacity: 1; }
+  100% { transform: scale(0.95); opacity: 0.8; }
+}
+
+.title {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.5px;
+}
+
+.subtitle {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* Language selector */
+.langGroup {
+  display: flex;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  padding: 3px;
+  gap: 2px;
+}
+
+.langBtn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all var(--dur) var(--ease);
+}
+
+.langBtn:hover {
+  color: var(--text);
+}
+
+.langActive {
+  background: var(--accent);
+  color: #ffffff !important;
+  font-weight: 700;
+  box-shadow: 0 2px 8px var(--accent-glow);
+}
+
+/* Primary Control Toolbar */
+.controlBar {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 12px 18px;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.controlSection {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Mode tabs */
+.modeTabs {
+  display: flex;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 2px;
+  gap: 2px;
+}
+
+.modeBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all var(--dur) var(--ease);
+}
+
+.modeBtn:hover {
+  color: var(--text);
+}
+
+.modeActive {
+  background: var(--accent);
+  color: #fff !important;
+}
+
+/* Variable toggles */
+.varGroup {
+  display: flex;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 2px;
+}
+
+.varBtn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.varBtn:hover {
+  color: var(--text);
+}
+
+.varActive {
+  background: rgba(56, 189, 248, 0.15);
+  color: #38bdf8 !important;
+  font-weight: 700;
+}
+
+/* Lead selector */
+.leadGroup {
+  display: flex;
+  gap: 4px;
+}
+
+.leadBtn {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 5px 9px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all var(--dur) var(--ease);
+}
+
+.leadBtn:hover {
+  color: var(--text);
+  border-color: var(--border-hover);
+}
+
+.leadActive {
+  background: rgba(249, 115, 22, 0.2);
+  border-color: var(--accent);
+  color: var(--accent) !important;
+}
+
+/* Visual Settings Toolbar (Smoothing, Mask, Labels) */
+.visualToolbar {
+  background: #090e18;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px 14px;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.visualControls {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.toggleLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  user-select: none;
+}
+
+.toggleInput {
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.opacitySlider {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.sliderInput {
+  accent-color: var(--accent);
+  width: 90px;
+  cursor: pointer;
+}
+
+/* Scenarios pills */
+.quickPills {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 14px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+
+.scenarioBtn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all var(--dur) var(--ease);
+}
+
+.scenarioBtn:hover {
+  border-color: var(--border-hover);
+  color: var(--text);
+}
+
+.scenarioActive {
+  background: rgba(52, 211, 153, 0.15);
+  border-color: #34d399;
+  color: #34d399 !important;
+  font-weight: 600;
+}
+
+/* Stats Strip */
+.statsStrip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.statCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+}
+
+.statLabel {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+
+.statValue {
+  font-size: 19px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.statSub {
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+/* Map Grid */
+.mapGrid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+.mapCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.mapHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.mapTitle {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mapMeta {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* Map Canvas Container */
+.mapCanvasWrap {
+  background: #050811;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  position: relative;
+  width: 100%;
+  height: 600px;
+  overflow: hidden;
+  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.8);
+}
+
+/* Background oceanic/cartographic styling */
+.oceanWatermark {
+  position: absolute;
+  right: 40px;
+  bottom: 80px;
+  font-size: 20px;
+  font-weight: 900;
+  letter-spacing: 6px;
+  color: rgba(56, 189, 248, 0.07);
+  user-select: none;
+  pointer-events: none;
+  transform: rotate(-35deg);
+  text-transform: uppercase;
+}
+
+.northArrow {
+  position: absolute;
+  top: 18px;
+  right: 20px;
+  width: 32px;
+  height: 32px;
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: 800;
+  color: #f8fafc;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Canvas meteorological layer */
+.weatherCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+  transition: opacity 0.2s ease;
+}
+
+/* SVG Vector layer */
+.svgMap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 3;
+  cursor: crosshair;
+}
+
+/* Landmass base layer */
+.landBase {
+  fill: #111726;
+  stroke: none;
+}
+
+/* District Polygons */
+.districtPolygon {
+  stroke-width: 0.75;
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+
+.districtPolygon:hover {
+  stroke-width: 2.2 !important;
+  stroke: #38bdf8 !important;
+  fill-opacity: 0.8 !important;
+  filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.6));
+}
+
+.districtSelected {
+  stroke-width: 2.8 !important;
+  stroke: #f97316 !important;
+  fill-opacity: 0.85 !important;
+  filter: drop-shadow(0 0 10px rgba(249, 115, 22, 0.9));
+}
+
+/* City Centroid Labels */
+.cityLabel {
+  font-family: inherit;
+  font-size: 9px;
+  font-weight: 700;
+  fill: #e2e8f0;
+  text-anchor: middle;
+  pointer-events: none;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9), 0 0 2px rgba(0, 0, 0, 0.9);
+}
+
+.cityDot {
+  fill: #f97316;
+  stroke: #ffffff;
+  stroke-width: 1;
+  pointer-events: none;
+}
+
+/* Neighboring states labels */
+.neighborLabel {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  fill: rgba(148, 163, 184, 0.25);
+  pointer-events: none;
+}
+
+/* Graticule coordinate lines */
+.graticuleLine {
+  stroke: rgba(255, 255, 255, 0.05);
+  stroke-dasharray: 2 4;
+  pointer-events: none;
+}
+
+.graticuleLabel {
+  font-size: 8px;
+  fill: rgba(148, 163, 184, 0.4);
+  font-family: monospace;
+  pointer-events: none;
+}
+
+/* Floating Legend */
+.legendOverlay {
+  position: absolute;
+  bottom: 14px;
+  left: 16px;
+  background: rgba(11, 15, 25, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(10px);
+  border-radius: 8px;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--text);
+  z-index: 10;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+}
+
+.legendGradient {
+  width: 190px;
+  height: 9px;
+  border-radius: 4px;
+}
+
+.legendLabels {
+  display: flex;
+  justify-content: space-between;
+  color: var(--text-muted);
+  font-size: 9px;
+  font-weight: 600;
+}
+
+/* Inspector Card */
+.inspectorCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.inspectorHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.inspectorTitle {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.districtBadge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+}
+
+.districtName {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.3px;
+}
+
+.stateName {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.alertBox {
+  border-radius: 8px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border: 1px solid;
+}
+
+.alertBoxRed {
+  background: rgba(220, 38, 38, 0.15);
+  border-color: rgba(220, 38, 38, 0.45);
+  color: #f87171;
+}
+
+.alertBoxOrange {
+  background: rgba(234, 88, 12, 0.15);
+  border-color: rgba(234, 88, 12, 0.45);
+  color: #fb923c;
+}
+
+.alertBoxYellow {
+  background: rgba(234, 179, 8, 0.15);
+  border-color: rgba(234, 179, 8, 0.45);
+  color: #facc15;
+}
+
+.alertBoxGreen {
+  background: rgba(34, 197, 94, 0.12);
+  border-color: rgba(34, 197, 94, 0.35);
+  color: #4ade80;
+}
+
+.alertTitle {
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.alertMsg {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+.metricRow {
+  display: flex;
+  justify-content: space-between;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+}
+
+.metricLabel {
+  color: var(--text-muted);
+}
+
+.metricVal {
+  font-weight: 700;
+  color: var(--text);
+}
+
+/* Weight Maps comparison subgrid */
+.weightsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-top: 14px;
+}
+
+.subWeightCard {
+  background: #090e18;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.subWeightHeader {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+@media (max-width: 1080px) {
+  .mapGrid {
+    grid-template-columns: 1fr;
+  }
+  .statsStrip {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

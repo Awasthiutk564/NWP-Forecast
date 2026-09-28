@@ -1,0 +1,132 @@
+.page {
+  padding: 28px 32px;
+  min-height: 100vh;
+  animation: fadeInUp 0.35s var(--ease) both;
+}
+
+.header {
+  margin-bottom: 24px;
+}
+
+.eyebrow {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #f97316;
+  margin-bottom: 4px;
+}
+
+.title {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.5px;
+}
+
+.subtitle {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+/* Level cards */
+.levelCards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 700px) {
+  .levelCards { grid-template-columns: 1fr; }
+}
+
+.levelCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: all var(--dur) var(--ease);
+}
+
+.levelCard:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.levelCard.red    { border-left: 3px solid #ef4444; }
+.levelCard.orange { border-left: 3px solid #f97316; }
+.levelCard.yellow { border-left: 3px solid #eab308; }
+
+.levelIcon  { font-size: 18px; }
+.levelCount { font-size: 32px; font-weight: 800; color: var(--text-primary); letter-spacing: -1px; }
+.levelLabel { font-size: 12px; font-weight: 700; color: var(--text-secondary); }
+.levelDesc  { font-size: 10px; color: var(--text-muted); }
+
+/* Thresholds */
+.thresholds {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.thresholdGroup {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+}
+
+.thresholdTitle {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+}
+
+.thresholdRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.threshBadge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+/* Table card */
+.tableCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.tableCardHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+}
+
+.headerIcon { color: var(--text-muted); }
+
+.tableTitle {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
