@@ -1,5 +1,5 @@
 import { OrbitControls } from "@react-three/drei";
-import { Canvas, useFrame, type ThreeEvent } from "@react-three/fiber";
+import { Canvas, useFrame, useThree, type ThreeEvent } from "@react-three/fiber";
 import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef } from "react";
 import * as THREE from "three";
 import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
@@ -158,6 +158,17 @@ function Base() {
   );
 }
 
+/** Pauses rendering while the scene is off screen and reliably restarts it when it comes back. */
+function RenderLoop({ active }: { active: boolean }) {
+  const setFrameloop = useThree((s) => s.setFrameloop);
+  const invalidate = useThree((s) => s.invalidate);
+  useEffect(() => {
+    setFrameloop(active ? "always" : "never");
+    if (active) invalidate();
+  }, [active, setFrameloop, invalidate]);
+  return null;
+}
+
 export interface SceneHandle { reset: () => void }
 
 interface SceneProps extends TerrainProps {
@@ -170,18 +181,19 @@ interface SceneProps extends TerrainProps {
 
 /** The 3-D grid: one column per 0.25° IMD cell over AP & Telangana, district lines on the floor. */
 export const ForecastScene = forwardRef<SceneHandle, SceneProps>(function ForecastScene(
-  { autoRotate, interactive = true, camera = [0.4, 10.2, 11.6], active = true, districtOpacity, ...terrain }, ref,
+  { autoRotate, interactive = true, camera = [0.3, 11.8, 13.2], active = true, districtOpacity, ...terrain }, ref,
 ) {
   const controls = useRef<OrbitControlsImpl>(null);
   useImperativeHandle(ref, () => ({ reset: () => controls.current?.reset() }), []);
   return (
     <Canvas
       dpr={[1, 2]}
-      frameloop={active ? "always" : "never"}
+      frameloop="always"
       camera={{ position: camera, fov: 36, near: 0.1, far: 100 }}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       style={{ touchAction: interactive ? "none" : "auto" }}
     >
+      <RenderLoop active={active} />
       <fog attach="fog" args={["#070a0f", 14, 26]} />
       <ambientLight intensity={0.55} />
       <hemisphereLight args={["#bcd4ff", "#1a1206", 0.6]} />
@@ -199,7 +211,7 @@ export const ForecastScene = forwardRef<SceneHandle, SceneProps>(function Foreca
         autoRotateSpeed={0.45}
         minPolarAngle={0.35}
         maxPolarAngle={1.2}
-        target={[0, 0.3, 0]}
+        target={[0, 0.3, 0.6]}
       />
     </Canvas>
   );
