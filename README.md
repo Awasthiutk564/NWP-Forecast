@@ -1,9 +1,9 @@
-#EdgeCast — Adaptive AI Blending of Weather Forecasts
+#EktaCast — Adaptive AI Blending of Weather Forecasts
 
 **Smart India Hackathon 2026 · Team ZeroPing · Problem statement SIH26081**
 *Hybrid AI–NWP Multi-Model Forecast Blending System (NCMRWF, Ministry of Earth Sciences) · Theme: Disaster Management*
 
-SamanvayCast combines several forecast sources into one better forecast. For every
+EktaCast combines several forecast sources into one better forecast. For every
 grid point, every lead day (1–5) and every variable (rainfall, maximum temperature),
 it learns how much to trust each source, then turns the blended forecast into
 next-day district alerts for Andhra Pradesh and Telangana in **English and Telugu**.

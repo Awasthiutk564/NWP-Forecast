@@ -1,0 +1,5 @@
+node_modules/
+dist/
+# copied from ../models and ../slides/figures by scripts/sync-assets.mjs
+public/models/
+public/figures/
