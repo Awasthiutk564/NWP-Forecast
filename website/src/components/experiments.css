@@ -16,11 +16,6 @@
 .hy-bar i { display: block; width: 100%; max-height: 100%; background: #9085e9; border-radius: 4px 4px 0 0; }
 .hy-win { font-size: 0.62rem; font-family: var(--font-mono); color: var(--text-3); text-align: center; line-height: 1.2; }
 .hy-win.on { color: #8fe3b3; }
-.wind-bars { display: flex; flex-direction: column; gap: 10px; }
-.wind-row { display: grid; grid-template-columns: 120px 1fr 40px; gap: 10px; align-items: center; }
-.wind-row .num { text-align: right; }
-.wind-leads { display: grid; grid-template-columns: repeat(5, 1fr); gap: 3px; }
-.wind-cell { height: 10px; background: rgba(255,255,255,0.04); border-radius: 3px; overflow: hidden; }
-.wind-cell i { display: block; height: 100%; }
+.pct-cell.wind-best { box-shadow: inset 0 0 0 1.5px #8fe3b3; font-weight: 650; }
 @media (max-width: 900px) { .exp-grid { grid-template-columns: 1fr; } }
 @media (max-width: 480px) { .pct-row { grid-template-columns: 92px repeat(5, minmax(0, 1fr)); } .pct-cell { font-size: 0.66rem; } .hy-grid { grid-template-columns: 1fr; } }

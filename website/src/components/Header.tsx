@@ -21,9 +21,10 @@ function UtilityStrip() {
       <div className="tricolor" aria-hidden><span /><span /><span /></div>
       <div className="container utility-row">
         <p className="utility-id">
-          <span>{PROJECT.hackathon}</span>
+          <span className="hide-sm">{PROJECT.hackathon}</span>
+          <span className="show-sm">SIH 2026</span>
           <span className="sep" aria-hidden>·</span>
-          <span>Problem statement {PROJECT.problemId}</span>
+          <span><span className="hide-sm">Problem statement </span>{PROJECT.problemId}</span>
           <span className="sep hide-sm" aria-hidden>·</span>
           <span className="hide-sm">{PROJECT.ministry}</span>
         </p>

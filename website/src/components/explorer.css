@@ -1,5 +1,6 @@
 .explorer-section { background: radial-gradient(60% 50% at 50% 0%, rgba(57,135,229,0.08), transparent 70%); }
 .explorer { margin-top: 44px; display: grid; grid-template-columns: 250px minmax(0, 1fr) 270px; overflow: hidden; min-height: 640px; box-shadow: 0 40px 120px -40px rgba(0,0,0,0.9); }
+.explorer > * { min-width: 0; } /* lets the scrolling case list stay inside narrow screens */
 .ex-rail, .ex-stats { padding: 18px 14px; background: rgba(0,0,0,0.14); }
 .ex-rail { border-right: 1px solid var(--line); }
 .ex-stats { border-left: 1px solid var(--line); padding: 18px 18px; }
@@ -51,4 +52,5 @@
   .ex-canvas { min-height: 380px; }
   .ex-stats { display: block; }
   .ex-hint { display: none; }
+  .ex-toolbar .seg { flex-wrap: wrap; }
 }

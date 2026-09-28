@@ -13,7 +13,8 @@
 .text-size { display: flex; gap: 2px; }
 .text-size button { border: 0; background: none; padding: 2px 7px; border-radius: 6px; color: var(--text-3); font-family: var(--font-mono); font-size: 0.78rem; }
 .text-size button:hover, .text-size button[aria-pressed="true"] { color: var(--text); background: rgba(255,255,255,0.06); }
-@media (max-width: 760px) { .hide-sm { display: none; } }
+.show-sm { display: none; }
+@media (max-width: 760px) { .hide-sm { display: none; } .show-sm { display: inline; } }
 
 .nav { transition: background 0.3s, border-color 0.3s, backdrop-filter 0.3s; border-bottom: 1px solid transparent; }
 .site-header.is-scrolled .nav { background: rgba(7, 10, 15, 0.78); backdrop-filter: blur(14px) saturate(1.4); border-bottom-color: var(--line); }

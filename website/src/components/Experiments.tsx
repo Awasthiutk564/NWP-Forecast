@@ -70,7 +70,7 @@ export function Experiments() {
   return (
     <section className="section" id="experiments" aria-labelledby="exp-title">
       <div className="container">
-        <SectionHead eyebrow="Experiments" title={<span id="exp-title">Adaptive by region, season,<br />regime and physics</span>}
+        <SectionHead eyebrow="Experiments" title={<span id="exp-title">Adaptive by region, season, regime and physics</span>}
           lead="The problem statement asks for weights that adapt by region, season and weather regime, and for a hybrid AI–NWP system. Each idea was run as a separate experiment next to the main blend, scored the same honest way, and reported whether it helped or not." />
         <div className="exp-grid">
           <Exp id="S-01" name="Season-aware weights" tone="warn" status="No clear gain"
@@ -109,23 +109,28 @@ export function Experiments() {
 
           <Exp id="W-04" name="10 m wind and high-wind alerts" tone="good" status={`Best at ${windBest.filter((b) => b === "blend").length}/5 leads`}
             summary="Wind blends S2S, persistence and climatology against IMDAA 10 m wind (00 UTC). Tested on 2013–15.">
-            <div className="wind-bars">
+            <div className="pct-grid" role="table" aria-label="10 m wind RMSE (m/s) by source and lead day">
+              <div className="pct-row pct-head" role="row">
+                <span role="columnheader" />
+                {LEADS.map((L) => <span key={L} role="columnheader" className="mono xs faint">D{L}</span>)}
+              </div>
               {windRows.map((src) => (
-                <div key={src} className="wind-row">
-                  <span className="row small" style={{ gap: 7 }}><i className="dot" style={{ background: SOURCE_META[src].color }} />{SOURCE_META[src].label}</span>
-                  <div className="wind-leads">
-                    {LEADS.map((L) => {
-                      const r = scoreOf(s.wind, "wspd", src, L);
-                      return <span key={L} className="wind-cell" title={`Day ${L}: ${r.toFixed(2)} m/s`}>
-                        <motion.i initial={{ width: 0 }} whileInView={{ width: `${(r / windMax) * 100}%` }} viewport={{ once: true }} style={{ background: SOURCE_META[src].color }} />
-                      </span>;
-                    })}
-                  </div>
-                  <span className="num xs">{scoreOf(s.wind, "wspd", src, 1).toFixed(2)}</span>
+                <div key={src} className="pct-row" role="row">
+                  <span role="rowheader" className="row small muted" style={{ gap: 7 }}><i className="dot" style={{ background: SOURCE_META[src].color }} />{SOURCE_META[src].label}</span>
+                  {LEADS.map((L, i) => {
+                    const r = scoreOf(s.wind, "wspd", src, L);
+                    const best = windBest[i] === src;
+                    return (
+                      <span key={L} role="cell" className={`pct-cell num${best ? " wind-best" : ""}`}
+                        style={{ background: `rgba(144,133,233,${0.06 + 0.3 * (1 - r / windMax)})` }}>
+                        {r.toFixed(2)}
+                      </span>
+                    );
+                  })}
                 </div>
               ))}
             </div>
-            <p className="xs faint">Bars: RMSE (m/s) at days 1 to 5; number: day 1. Honest caveat: the yellow high-wind alert (≥ 10.8 m/s) scores CSI {yellow.CSI?.toFixed(2)} with {Math.round((yellow.FAR ?? 0) * 100)}% false alarms, and no orange or red events occurred in the test years.</p>
+            <p className="xs faint">RMSE in m/s, lower is better; outlined cell = best at that lead. Honest caveat: the yellow high-wind alert (≥ 10.8 m/s) scores CSI {yellow.CSI?.toFixed(2)} with {Math.round((yellow.FAR ?? 0) * 100)}% false alarms, and no orange or red events occurred in the test years.</p>
           </Exp>
         </div>
       </div>

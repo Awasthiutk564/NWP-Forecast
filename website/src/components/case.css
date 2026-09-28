@@ -1,7 +1,7 @@
 .case { background: linear-gradient(180deg, transparent, rgba(57,135,229,0.05) 40%, transparent); }
 .case-grid { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: clamp(24px, 4vw, 56px); margin-top: 44px; align-items: center; }
 .case-tags { display: flex; gap: 8px; flex-wrap: wrap; }
-.case-num-label { margin: 28px 0 8px; }
+.case .case-num-label { margin: 28px 0 8px; }
 .case-nums { display: flex; gap: 36px; flex-wrap: wrap; }
 .case-nums p { margin: 0; }
 .case-num { font-size: clamp(2.6rem, 5vw, 4rem); line-height: 1; font-weight: 300; }
