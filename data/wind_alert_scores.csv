@@ -1,0 +1,4 @@
+level,threshold_ms,hits,misses,false_alarms,POD,FAR,CSI
+yellow,10.8,17,151,144,0.10119047619047619,0.8944099378881988,0.05448717948717949
+orange,17.2,0,0,0,,,
+red,24.5,0,0,0,,,

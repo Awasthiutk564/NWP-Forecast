@@ -1,10 +1,26 @@
+# Core scientific stack
 xarray
 netCDF4
 numpy
 pandas
 imdlib
 geopandas
-streamlit
-plotly
 pyarrow
 dask
+
+# ML
+lightgbm
+scikit-learn
+
+# Visualisation
+streamlit
+plotly
+matplotlib
+
+# API server
+fastapi
+uvicorn[standard]
+python-multipart
+
+# Utilities
+shapely
