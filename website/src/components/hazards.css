@@ -1,0 +1,28 @@
+.hz-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-top: 56px; }
+.hz-grid > div { height: 100%; }
+.hz-card {
+  --mx: 50%; --my: 0%; --tone: 57, 135, 229;
+  position: relative; display: flex; flex-direction: column; height: 100%; padding: 22px 20px 20px;
+  border-radius: var(--radius); background: var(--surface); border: 1px solid var(--line); overflow: hidden;
+  transition: border-color 0.3s, transform 0.4s var(--ease);
+}
+.hz-card::before {
+  content: ""; position: absolute; inset: 0; opacity: 0; transition: opacity 0.3s; pointer-events: none;
+  background: radial-gradient(320px circle at var(--mx) var(--my), rgba(var(--tone), 0.16), transparent 60%);
+}
+.hz-card:hover { border-color: rgba(var(--tone), 0.45); transform: translateY(-3px); }
+.hz-card:hover::before { opacity: 1; }
+.hz-heat { --tone: 235, 104, 52; }
+.hz-rain { --tone: 57, 135, 229; }
+.hz-wind { --tone: 144, 133, 233; }
+.hz-blend { --tone: 47, 191, 113; }
+.hz-card > * { position: relative; }
+.hz-card .chip { align-self: flex-start; }
+.hz-title { margin: 16px 0 0; font-size: 1.08rem; font-weight: 580; letter-spacing: -0.01em; }
+.hz-stat { margin: 18px 0 0; font-size: 1.75rem; color: rgb(var(--tone)); filter: brightness(1.25); }
+.hz-stat-label { margin: 2px 0 0; font-size: 0.76rem; color: var(--text-3); font-family: var(--font-mono); }
+.hz-body { margin: 14px 0 0; font-size: 0.87rem; color: var(--text-2); flex: 1; }
+.hz-more { margin-top: 16px; font-size: 0.82rem; color: var(--text-3); transition: color 0.2s; }
+.hz-card:hover .hz-more { color: var(--text); }
+@media (max-width: 1060px) { .hz-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .hz-grid { grid-template-columns: 1fr; } }

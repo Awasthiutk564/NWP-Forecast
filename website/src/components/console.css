@@ -6,7 +6,7 @@
 .console-side { border-right: 1px solid var(--line); padding: 16px 12px; display: flex; flex-direction: column; gap: 20px; background: rgba(0,0,0,0.12); }
 .side-title { margin: 0 0 6px; padding: 0 10px; font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-3); }
 .side-item { position: relative; display: block; width: 100%; text-align: left; border: 0; background: none; padding: 8px 10px; border-radius: 8px; font-size: 0.88rem; color: var(--text-2); }
-.side-item span { position: relative; z-index: 1; }
+.side-item > span:not(.side-active) { position: relative; z-index: 1; }
 .side-item:hover, .side-item[aria-pressed="true"] { color: var(--text); }
 .side-active { position: absolute; inset: 0; border-radius: 8px; background: var(--surface-3); box-shadow: inset 0 0 0 1px var(--line-2); }
 .side-src { display: grid; grid-template-columns: auto 1fr; column-gap: 8px; align-items: center; margin: 0; padding: 5px 10px; font-size: 0.84rem; }

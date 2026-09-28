@@ -1,0 +1,15 @@
+.case { background: linear-gradient(180deg, transparent, rgba(57,135,229,0.05) 40%, transparent); }
+.case-grid { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: clamp(24px, 4vw, 56px); margin-top: 44px; align-items: center; }
+.case-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+.case-num-label { margin: 28px 0 8px; }
+.case-nums { display: flex; gap: 36px; flex-wrap: wrap; }
+.case-nums p { margin: 0; }
+.case-num { font-size: clamp(2.6rem, 5vw, 4rem); line-height: 1; font-weight: 300; }
+.case-num.blend { color: #86b6ef; }
+.case-quote { margin: 28px 0 14px; padding: 0 0 0 18px; border-left: 2px solid var(--saffron); font-size: 1.05rem; line-height: 1.6; color: var(--text); }
+.case-maps { padding: 20px; }
+.case-map-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+.case-map-pair figure { margin: 0; }
+.case-map-pair figcaption { margin-bottom: 8px; }
+@media (max-width: 900px) { .case-grid { grid-template-columns: 1fr; } }
+@media (max-width: 520px) { .case-map-pair { grid-template-columns: 1fr; } }

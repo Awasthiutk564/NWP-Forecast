@@ -1,0 +1,54 @@
+.explorer-section { background: radial-gradient(60% 50% at 50% 0%, rgba(57,135,229,0.08), transparent 70%); }
+.explorer { margin-top: 44px; display: grid; grid-template-columns: 250px minmax(0, 1fr) 270px; overflow: hidden; min-height: 640px; box-shadow: 0 40px 120px -40px rgba(0,0,0,0.9); }
+.ex-rail, .ex-stats { padding: 18px 14px; background: rgba(0,0,0,0.14); }
+.ex-rail { border-right: 1px solid var(--line); }
+.ex-stats { border-left: 1px solid var(--line); padding: 18px 18px; }
+.ex-cases { display: flex; flex-direction: column; gap: 4px; }
+.ex-case { position: relative; display: flex; flex-direction: column; gap: 2px; text-align: left; border: 0; background: none; padding: 10px 12px; border-radius: 10px; color: var(--text-2); }
+.ex-case > span:not(.ex-case-active) { position: relative; z-index: 1; }
+.ex-case:hover, .ex-case[aria-pressed="true"] { color: var(--text); }
+.ex-case-active { position: absolute; inset: 0; border-radius: 10px; background: var(--surface-3); box-shadow: inset 0 0 0 1px var(--line-2); }
+.ex-case-date { color: var(--saffron); }
+.ex-case-title { font-weight: 560; font-size: 0.9rem; }
+.ex-stage { display: flex; flex-direction: column; min-width: 0; }
+.ex-toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; padding: 14px 16px; border-bottom: 1px solid var(--line); }
+.ex-toolbar--sub { overflow: hidden; background: rgba(0,0,0,0.1); }
+.ex-small { padding: 7px 14px; font-size: 0.82rem; }
+.ex-lead { display: inline-flex; align-items: center; gap: 10px; }
+.ex-lead input { accent-color: var(--saffron); width: 130px; }
+.ex-canvas { position: relative; flex: 1; min-height: 540px; cursor: grab; }
+.ex-canvas:active { cursor: grabbing; }
+.ex-canvas canvas { position: absolute !important; inset: 0; width: 100% !important; height: 100% !important; }
+.ex-canvas .loading { position: absolute; inset: 0; }
+.ex-caption { position: absolute; left: 18px; top: 16px; pointer-events: none; }
+.ex-cap-title { margin: 0 0 2px; font-weight: 580; }
+.ex-caption p { margin: 0; }
+.ex-hover { position: absolute; right: 16px; top: 16px; min-width: 180px; padding: 10px 12px; border-radius: 10px; background: rgba(14,19,27,0.92); border: 1px solid var(--line-2); pointer-events: none; }
+.ex-hover p { margin: 0; }
+.ex-key { position: absolute; left: 14px; bottom: 12px; width: min(330px, 62%); pointer-events: none; padding: 8px 10px; border-radius: 10px; background: rgba(7,10,15,0.78); backdrop-filter: blur(6px); }
+.ex-hint { position: absolute; right: 18px; bottom: 16px; margin: 0; }
+.ex-stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.ex-stat-grid > div { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+.ex-big { margin: 4px 0 0; font-size: 1.4rem; }
+.ex-big small { font-size: 0.75rem; color: var(--text-3); }
+.ex-rmse { display: flex; flex-direction: column; gap: 4px; margin-bottom: 8px; }
+.ex-rmse-row { display: grid; grid-template-columns: 104px 1fr 40px; gap: 8px; align-items: center; border: 0; background: none; padding: 6px 6px; border-radius: 8px; font-size: 0.82rem; color: var(--text-2); text-align: left; }
+.ex-rmse-row:hover, .ex-rmse-row[aria-pressed="true"] { background: rgba(255,255,255,0.05); color: var(--text); }
+.ex-rmse-row .num { text-align: right; }
+.ex-rmse-track { height: 8px; background: rgba(255,255,255,0.04); border-radius: 4px; overflow: hidden; }
+.ex-rmse-track i { display: block; height: 100%; border-radius: 0 4px 4px 0; }
+.ex-blurb { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); }
+@media (max-width: 1180px) {
+  .explorer { grid-template-columns: 220px minmax(0, 1fr); }
+  .ex-stats { grid-column: 1 / -1; border-left: 0; border-top: 1px solid var(--line); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 24px; }
+  .ex-stats > * { grid-column: auto; }
+}
+@media (max-width: 800px) {
+  .explorer { grid-template-columns: 1fr; }
+  .ex-rail { border-right: 0; border-bottom: 1px solid var(--line); }
+  .ex-cases { flex-direction: row; overflow-x: auto; }
+  .ex-case { min-width: 190px; }
+  .ex-canvas { min-height: 380px; }
+  .ex-stats { display: block; }
+  .ex-hint { display: none; }
+}

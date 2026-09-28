@@ -1,0 +1,26 @@
+.exp-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 52px; }
+.exp { display: flex; flex-direction: column; padding: 24px; }
+.exp-title { margin: 16px 0 6px; }
+.exp > p { margin: 0; }
+.exp-body { margin-top: 20px; display: flex; flex-direction: column; gap: 12px; }
+.exp-body > p { margin: 0; }
+.pct-grid { display: flex; flex-direction: column; gap: 3px; }
+.pct-row { display: grid; grid-template-columns: 118px repeat(5, minmax(0, 1fr)); gap: 3px; align-items: center; }
+.pct-head span { text-align: center; }
+.pct-cell { text-align: center; font-size: 0.75rem; padding: 7px 2px; border-radius: 5px; color: var(--text); }
+.hy-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.hy-grid p { margin: 0 0 10px; }
+.hy-leads { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; align-items: end; }
+.hy-lead { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.hy-bar { position: relative; width: 22px; height: 70px; border-radius: 5px; background: rgba(255,255,255,0.04); overflow: hidden; display: flex; align-items: flex-end; }
+.hy-bar i { display: block; width: 100%; max-height: 100%; background: #9085e9; border-radius: 4px 4px 0 0; }
+.hy-win { font-size: 0.62rem; font-family: var(--font-mono); color: var(--text-3); text-align: center; line-height: 1.2; }
+.hy-win.on { color: #8fe3b3; }
+.wind-bars { display: flex; flex-direction: column; gap: 10px; }
+.wind-row { display: grid; grid-template-columns: 120px 1fr 40px; gap: 10px; align-items: center; }
+.wind-row .num { text-align: right; }
+.wind-leads { display: grid; grid-template-columns: repeat(5, 1fr); gap: 3px; }
+.wind-cell { height: 10px; background: rgba(255,255,255,0.04); border-radius: 3px; overflow: hidden; }
+.wind-cell i { display: block; height: 100%; }
+@media (max-width: 900px) { .exp-grid { grid-template-columns: 1fr; } }
+@media (max-width: 480px) { .pct-row { grid-template-columns: 92px repeat(5, minmax(0, 1fr)); } .pct-cell { font-size: 0.66rem; } .hy-grid { grid-template-columns: 1fr; } }

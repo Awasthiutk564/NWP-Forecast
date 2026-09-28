@@ -114,7 +114,7 @@ function HeroScene() {
             autoRotate
             interactive={false}
             active={inView}
-            camera={[1.6, 6.4, 8.4]}
+            camera={[3.2, 9.4, 13.2]}
             districtOpacity={0.22}
           />
         </Suspense>

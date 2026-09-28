@@ -1,0 +1,29 @@
+.models-bar { margin-top: 40px; }
+.models-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 20px; }
+.model { display: flex; flex-direction: column; }
+.model-title { margin: 14px 0 10px; font-size: 1rem; font-weight: 580; }
+.model-params { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 0; }
+.model-params div { background: var(--bg-2); border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; }
+.model-params dt { color: var(--text-3); font-size: 0.62rem; letter-spacing: 0.06em; text-transform: uppercase; }
+.model-params dd { margin: 2px 0 0; color: var(--text); font-size: 0.85rem; }
+.imp { list-style: none; margin: 0 0 16px; padding: 0; display: flex; flex-direction: column; gap: 7px; flex: 1; }
+.imp li { display: grid; grid-template-columns: 110px 1fr 34px; gap: 8px; align-items: center; font-size: 0.8rem; }
+.imp-name { color: var(--text-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.imp-track { height: 8px; border-radius: 4px; background: rgba(255,255,255,0.04); overflow: hidden; }
+.imp-track i { display: block; height: 100%; background: #d95926; border-radius: 0 4px 4px 0; }
+.imp .num { text-align: right; }
+.model-dl { justify-content: center; font-size: 0.8rem; padding: 9px 14px; word-break: break-all; }
+.model-note { background: linear-gradient(160deg, rgba(57,135,229,0.1), transparent 60%), var(--surface); }
+.model-note .chip { align-self: flex-start; }
+.model-note p { margin: 0 0 6px; }
+.model-note code { font-family: var(--font-mono); font-size: 0.85em; color: var(--text); }
+.figs-head { margin: 64px 0 14px; }
+.figs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.fig { display: flex; flex-direction: column; width: 100%; border: 1px solid var(--line); border-radius: var(--radius); background: #fff; padding: 0; overflow: hidden; text-align: left; transition: transform 0.3s var(--ease), border-color 0.3s; }
+.fig:hover { transform: translateY(-3px); border-color: var(--line-2); }
+.fig img { width: 100%; aspect-ratio: 16 / 10; object-fit: contain; background: #fff; }
+.fig-cap { display: flex; flex-direction: column; gap: 2px; padding: 12px 14px; background: var(--surface); font-size: 0.88rem; }
+.lightbox { position: fixed; inset: 0; z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 4vw; background: rgba(4,6,10,0.88); backdrop-filter: blur(6px); cursor: zoom-out; }
+.lightbox img { max-width: min(1200px, 100%); max-height: 82vh; border-radius: 12px; background: #fff; }
+@media (max-width: 960px) { .models-grid, .figs { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px) { .models-grid, .figs { grid-template-columns: 1fr; } .model-params { grid-template-columns: repeat(2, 1fr); } }

@@ -1,0 +1,38 @@
+.prov-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 52px; }
+.prov { height: 100%; }
+.prov-seal { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; color: var(--saffron); background: var(--saffron-soft); font-size: 0.9rem; }
+.prov-name { margin: 16px 0 4px; font-size: 1rem; font-weight: 580; }
+.prov-who { margin: 0 0 10px; font-family: var(--font-mono); line-height: 1.5; }
+.prov p:last-child { margin: 0; }
+.honesty { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 14px; }
+.honesty-card .chip { align-self: flex-start; }
+.split-list { list-style: none; margin: 16px 0 12px; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.split-list li { display: grid; grid-template-columns: 100px 1fr; gap: 12px; padding: 10px 12px; border-radius: 10px; background: var(--bg-2); border: 1px solid var(--line); font-size: 0.9rem; }
+.split-list b { font-family: var(--font-mono); font-weight: 500; }
+.split-list span { color: var(--text-2); }
+.mera { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0 12px; }
+.mera > div { padding: 12px 14px; border-radius: 10px; background: var(--bg-2); border: 1px solid var(--line); }
+.mera .kpi-value { margin-bottom: 0; }
+.limits { margin-top: 56px; }
+.limit-list { list-style: none; margin: 12px 0 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 32px; }
+.limit-list li { display: flex; gap: 12px; }
+.limit-list b { font-weight: 560; }
+.limit-list p { margin: 4px 0 0; }
+.refs { margin-top: 28px; }
+.run { overflow: hidden; border-top: 1px solid var(--line); }
+.run-glow { position: absolute; inset: 30% -10% -40% -10%; background: radial-gradient(40% 50% at 30% 60%, rgba(255,140,50,0.18), transparent 70%), radial-gradient(35% 45% at 80% 60%, rgba(47,191,113,0.12), transparent 70%); pointer-events: none; }
+.run-grid { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: clamp(24px, 5vw, 64px); align-items: center; }
+.terminal { overflow: hidden; background: rgba(5,7,11,0.85); }
+.terminal-top { padding: 10px 14px; border-bottom: 1px solid var(--line); }
+.terminal pre { margin: 0; padding: 18px; overflow-x: auto; font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.8; color: #cfe3d6; }
+.team { position: relative; margin-top: 72px; }
+.team-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; margin-top: 12px; }
+.team-card { padding: 14px 16px; border-radius: 12px; border: 1px solid var(--line); background: rgba(14,19,27,0.7); }
+.team-role { color: var(--saffron); font-size: 0.85rem; }
+.team-card p { margin: 6px 0 0; }
+@media (max-width: 960px) {
+  .prov-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .run-grid, .honesty, .limit-list { grid-template-columns: 1fr; }
+  .team-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 560px) { .prov-grid, .team-grid { grid-template-columns: 1fr; } }

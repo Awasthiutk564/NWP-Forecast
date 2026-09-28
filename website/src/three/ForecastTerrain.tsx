@@ -11,8 +11,8 @@ const FOOT = 0.215; // column footprint in degrees (grid spacing is 0.25)
 
 /** Column height in scene units. Rain uses a square-root scale so a 244 mm cyclone and a 5 mm shower both stay readable. */
 export function heightOf(v: number, variable: Var) {
-  if (variable === "rain") return 0.03 + Math.sqrt(Math.max(0, v)) * 0.2;
-  return 0.03 + Math.max(0, v - 18) * 0.085;
+  if (variable === "rain") return 0.03 + Math.sqrt(Math.max(0, v)) * 0.12;
+  return 0.03 + Math.max(0, v - 24) * 0.04;
 }
 
 export interface HoverInfo { index: number; lat: number; lon: number; value: number | null; district: string | null }
@@ -170,7 +170,7 @@ interface SceneProps extends TerrainProps {
 
 /** The 3-D grid: one column per 0.25° IMD cell over AP & Telangana, district lines on the floor. */
 export const ForecastScene = forwardRef<SceneHandle, SceneProps>(function ForecastScene(
-  { autoRotate, interactive = true, camera = [0.4, 7.2, 8.6], active = true, districtOpacity, ...terrain }, ref,
+  { autoRotate, interactive = true, camera = [0.4, 10.2, 11.6], active = true, districtOpacity, ...terrain }, ref,
 ) {
   const controls = useRef<OrbitControlsImpl>(null);
   useImperativeHandle(ref, () => ({ reset: () => controls.current?.reset() }), []);
@@ -182,7 +182,7 @@ export const ForecastScene = forwardRef<SceneHandle, SceneProps>(function Foreca
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       style={{ touchAction: interactive ? "none" : "auto" }}
     >
-      <fog attach="fog" args={["#070a0f", 11, 22]} />
+      <fog attach="fog" args={["#070a0f", 14, 26]} />
       <ambientLight intensity={0.55} />
       <hemisphereLight args={["#bcd4ff", "#1a1206", 0.6]} />
       <directionalLight position={[4, 9, 5]} intensity={1.6} />
