@@ -42,7 +42,7 @@ const INITIAL_MESSAGES: Message[] = [
   {
     id: "m-0",
     sender: "bot",
-    text: "👋 **Hello! I'm EdgeCast AI**, your meteorological assistant for Andhra Pradesh and Telangana.\n\nAsk me about upcoming weather, rain, temperature, or disaster alerts in any of our 59 districts!",
+    text: "👋 **Namaste! I am Megha Mitra (మేఘ మిత్ర / मेघ मित्र)**, your AI meteorological companion for Andhra Pradesh and Telangana.\n\nAsk me about upcoming weather, rain, temperature, or disaster alerts in any of our 59 districts!",
     timestamp: "Just now"
   }
 ];
@@ -133,7 +133,7 @@ export default function ChatBot() {
         <button className={styles.chatFloatBtn} onClick={() => setIsOpen(true)}>
           <div className={styles.pulseRing} />
           <Sparkles size={16} />
-          <span>Ask Weather AI</span>
+          <span>Megha Mitra AI</span>
         </button>
       )}
 
@@ -147,7 +147,7 @@ export default function ChatBot() {
                 <Bot size={18} />
               </div>
               <div>
-                <div className={styles.chatTitle}>Weather AI Assistant</div>
+                <div className={styles.chatTitle}>Megha Mitra AI</div>
                 <div className={styles.chatStatus}>
                   <span className={styles.onlineDot} />
                   <span>Hybrid Ensemble Active</span>

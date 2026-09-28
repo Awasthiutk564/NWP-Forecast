@@ -8,6 +8,7 @@ import { Footer } from "./components/Footer";
 import { Hazards } from "./components/Hazards";
 import { Header } from "./components/Header";
 import { Hero, SourceStrip } from "./components/Hero";
+<<<<<<< HEAD
 import { Method } from "./components/Method";
 import { Models } from "./components/Models";
 
@@ -15,6 +16,9 @@ const SECTIONS = {
   hero: Hero, strip: SourceStrip, results: Console, hazards: Hazards, method: Method, explorer: Explorer,
   experiments: Experiments, alerts: Alerts, case: CaseStudy, models: Models, data: DataSection, run: RunIt, footer: Footer,
 };
+=======
+import { MausamChatBot } from "./components/MausamChatBot";
+>>>>>>> 9c2e3d4 (Ai-assistance)
 
 export default function App() {
   // Development only: /?section=explorer renders a single section, handy for checking one part in isolation.
@@ -40,7 +44,20 @@ export default function App() {
         <DataSection />
         <RunIt />
       </main>
+<<<<<<< HEAD
       <Footer />
+=======
+      <footer className="container section--tight faint small" style={{ borderTop: "1px solid var(--line)" }}>
+        <p>
+          {PROJECT.name} · {PROJECT.team} · {PROJECT.hackathon} · {PROJECT.problemId} ({PROJECT.problemTitle})
+        </p>
+        <p className="xs">
+          Student prototype built for the hackathon. It is not an official forecast or warning of IMD, NCMRWF or any
+          government body. Data: IMD, NCMRWF (IMDAA, MERA, S2S; CC-BY), LGD district boundaries.
+        </p>
+      </footer>
+      <MausamChatBot />
+>>>>>>> 9c2e3d4 (Ai-assistance)
     </>
   );
 }

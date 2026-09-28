@@ -505,7 +505,7 @@ def chat(q: str = Query(None), body: dict = None):
     if not query_text:
         return {
             "reply": (
-                "👋 Hello! I'm your AI Weather Assistant for Andhra Pradesh & Telangana. "
+                "👋 **Namaste! I am Megha Mitra (మేఘ మిత్ర / मेघ मित्र)**, your AI meteorological companion for Andhra Pradesh & Telangana. "
                 "You can ask me questions like:\n\n"
                 "• *'What is the 5-day weather in Hyderabad?'*\n"
                 "• *'Will it rain in Visakhapatnam this week?'*\n"
