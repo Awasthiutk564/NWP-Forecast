@@ -8,13 +8,24 @@ import { Footer } from "./components/Footer";
 import { Hazards } from "./components/Hazards";
 import { Header } from "./components/Header";
 import { Hero, SourceStrip } from "./components/Hero";
-import { MausamChatBot } from "./components/MausamChatBot";
 import { Method } from "./components/Method";
 import { Models } from "./components/Models";
+import { MausamChatBot } from "./components/MausamChatBot";
 
 const SECTIONS = {
-  hero: Hero, strip: SourceStrip, results: Console, hazards: Hazards, method: Method, explorer: Explorer,
-  experiments: Experiments, alerts: Alerts, case: CaseStudy, models: Models, data: DataSection, run: RunIt, footer: Footer,
+  hero: Hero,
+  strip: SourceStrip,
+  results: Console,
+  hazards: Hazards,
+  method: Method,
+  explorer: Explorer,
+  experiments: Experiments,
+  alerts: Alerts,
+  case: CaseStudy,
+  models: Models,
+  data: DataSection,
+  run: RunIt,
+  footer: Footer,
 };
 
 export default function App() {
